@@ -1028,7 +1028,6 @@ export function removeClass<T extends AnyNode, R extends ArrayLike<T>>(
   }
 
   const classes = splitNames(name);
-  const numClasses = classes.length;
   const removeAll = arguments.length === 0;
 
   return domEach(this, (el) => {
@@ -1036,29 +1035,18 @@ export function removeClass<T extends AnyNode, R extends ArrayLike<T>>(
 
     if (removeAll) {
       // Short circuit the remove all case as this is the nice one
-      el.attribs['class'] = '';
-    } else {
-      const elClasses = splitNames(el.attribs['class']);
-      let changed = false;
-
-      for (let j = 0; j < numClasses; j++) {
-        const index = elClasses.indexOf(classes[j]);
-
-        if (index !== -1) {
-          elClasses.splice(index, 1);
-          changed = true;
-
-          /*
-           * We have to do another pass to ensure that there are not duplicate
-           * classes listed
-           */
-          j--;
-        }
-      }
-      if (changed) {
-        el.attribs['class'] = elClasses.join(' ');
-      }
+      delete el.attribs['class'];
+      return;
     }
+    const elClasses = splitNames(el.attribs['class']);
+    const classesToKeep = elClasses.filter(
+      (elClass) => !classes.includes(elClass),
+    );
+    if (classesToKeep.length > 0) {
+      el.attribs['class'] = classesToKeep.join(' ');
+      return;
+    }
+    delete el.attribs['class'];
   });
 }
 

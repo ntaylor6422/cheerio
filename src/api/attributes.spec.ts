@@ -952,7 +952,7 @@ describe('$(...)', () => {
       // Remove one class from set
       const $li = $('li').removeClass('orange');
       expect($li.eq(0).attr('class')).toBe('apple');
-      expect($li.eq(1).attr('class')).toBe('');
+      expect($li.eq(1).attr('class')).toBeUndefined();
       expect($li.eq(2).attr('class')).toBe('pear');
 
       // Mixed with text nodes
@@ -963,7 +963,7 @@ describe('$(...)', () => {
       expect($red[0].type).toBe('text');
       expect($red[1].type).toBe('tag');
       expect($red[2].type).toBe('text');
-      expect($red.eq(1).attr('class')).toBe('');
+      expect($red.eq(1).attr('class')).toBeUndefined();
       expect($red.eq(1).prop('tagName')).toBe('UL');
     });
 
@@ -1040,9 +1040,7 @@ describe('$(...)', () => {
 
       $body.removeClass(() => 'test');
 
-      expect($text('body').html()).toBe(
-        '<a class="">1</a>TEXT<b class="">2</b>',
-      );
+      expect($text('body').html()).toBe('<a>1</a>TEXT<b>2</b>');
     });
   });
 
